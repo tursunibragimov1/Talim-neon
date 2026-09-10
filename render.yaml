@@ -1,10 +1,7 @@
 services:
   - type: web
-    name: your-app
+    name: Talim-neon-1
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
-        
+    

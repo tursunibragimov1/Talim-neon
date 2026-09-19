@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ta'lim.Neon — Smart LMS Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0e17;
+            --bg-surface: #111827;
+            --bg-elevated: #1f2937;
+            --primary: #00f2fe;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --border: #374151;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; padding-bottom: 30px; }
+
+        header {
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-weight: 700; font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .role-switch select {
+            background: var(--bg-elevated);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 16px; }
+
+        /* Asosiy 4 ta ko'rsatkich */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        @media (min-width: 600px) {
+            .metrics-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .metric-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+        }
+        .metric-card span { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .metric-card h3 { font-size: 20px; margin-top: 6px; }
+
+        /* Qidiruv va filtrlar */
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .search-input {
+            flex: 1;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            font-size: 14px;
+        }
+        .filter-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .filter-btn.active { border-color: var(--primary); color: var(--primary); }
+
+        /* Ixcham o'quvchilar ro'yxati */
+        .student-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .student-item:hover { border-color: var(--primary); transform: translateY(-1px); }
+        .student-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .student-info p { font-size: 13px; color: var(--text-muted); }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-paid { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        .status-due { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+
+        /* Ichki tafsilotlar modali (Progressive Disclosure) */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 480px;
+            width: 100%;
+            padding: 24px;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .btn {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-primary { background: var(--primary); color: #0a0e17; }
+        .btn-secondary { background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⚡ Ta'lim.Neon</div>
+        <div class="role-switch">
+            <select id="roleSelector" onchange="changeRole(this.value)">
+                <option value="admin">Administrator</option>
+                <option value="teacher">O'qituvchi</option>
+                <option value="student">O'quvchi</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- 4 ta asosiy statistika -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span>O'quvchilar</span>
+                <h3>142 ta</h3>
+            </div>
+            <div class="metric-card">
+                <span>Faol guruhlar</span>
+                <h3>12 ta</h3>
+            </div>
+            <div class="metric-card">
+                <span>Yig'ildi</span>
+                <h3 style="color: var(--accent-green);">18.5M</h3>
+            </div>
+            <div class="metric-card">
+                <span>Qarzdorlik</span>
+                <h3 style="color: var(--accent-red);">8 kishi</h3>
+            </div>
+        </div>
+
+        <!-- Qidiruv maydoni -->
+        <div class="controls-row">
+            <input type="text" class="search-input" placeholder="Ism yoki telefon orqali tezkor qidiruv..." oninput="filterStudents(this.value)">
+            <button class="filter-btn" id="debtFilterBtn" onclick="toggleDebtFilter()">Faqat qarzdorlar</button>
+        </div>
+
+        <!-- O'quvchilarning ixcham ro'yxati -->
+        <div id="studentsList">
+            <div class="student-item" data-status="paid" onclick="openDetails('Yusupov Furqat', 'BioKimyo • Biologiya', '630 000', 'To\'langan', '+998 90 123-45-67')">
+                <div class="student-info">
+                    <h4>Yusupov Furqat</h4>
+                    <p>BioKimyo • +998 90 123-45-67</p>
+                </div>
+                <span class="status-badge status-paid">To'langan</span>
+            </div>
+
+            <div class="student-item" data-status="due" onclick="openDetails('Madiyeva Nodira', 'BioKimyo • Biologiya', '630 000', 'Muddati o\'tgan', '+998 90 987-65-43')">
+                <div class="student-info">
+                    <h4>Madiyeva Nodira</h4>
+                    <p>BioKimyo • +998 90 987-65-43</p>
+                </div>
+                <span class="status-badge status-due">630 000 so'm qarz</span>
+            </div>
+
+            <div class="student-item" data-status="due" onclick="openDetails('Mengiyeva Gulnoz', 'BioKimyo • Biologiya', '700 000', 'Muddati o\'tgan', '+998 93 111-22-33')">
+                <div class="student-info">
+                    <h4>Mengiyeva Gulnoz</h4>
+                    <p>BioKimyo • +998 93 111-22-33</p>
+                </div>
+                <span class="status-badge status-due">700 000 so'm qarz</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- O'quvchiga tegishli barcha amallar shu oyna ichida -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalName">O'quvchi kartasi</h3>
+                <button class="close-btn" onclick="closeDetails()">&times;</button>
+            </div>
+            <p id="modalGroup" style="color: var(--text-muted); font-size: 14px; margin-bottom: 6px;"></p>
+            <p id="modalPhone" style="color: var(--text-muted); font-size: 14px; margin-bottom: 12px;"></p>
+            <p id="modalPayment" style="font-size: 16px; font-weight: 600; margin-bottom: 8px;"></p>
+
+            <div class="action-grid">
+                <button class="btn btn-primary" onclick="markPaid()">To'lovni qabul qilish</button>
+                <button class="btn btn-secondary" onclick="sendTelegramReport()">Telegram xabar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let onlyDebts = false;
+
+        function openDetails(name, group, fee, status, phone) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalGroup').innerText = "Yo'nalish: " + group;
+            document.getElementById('modalPhone').innerText = "Telefon: " + phone;
+            document.getElementById('modalPayment').innerText = "Holat: " + status + " (" + fee + " so'm)";
+            document.getElementById('detailsModal').classList.add('active');
+        }
+
+        function closeDetails() {
+            document.getElementById('detailsModal').classList.remove('active');
+        }
+
+        function markPaid() {
+            alert("To'lov muvaffaqiyatli qabul qilindi!");
+            closeDetails();
+        }
+
+        function sendTelegramReport() {
+            alert("Ota-onaga Telegram orqali bitta tugmada hisobot yuborildi!");
+            closeDetails();
+        }
+
+        function filterStudents(query) {
+            const items = document.querySelectorAll('.student-item');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                const matchesSearch = text.includes(query.toLowerCase());
+                const isDue = item.getAttribute('data-status') === 'due';
+                
+                if (matchesSearch && (!onlyDebts || isDue)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleDebtFilter() {
+            onlyDebts = !onlyDebts;
+            const btn = document.getElementById('debtFilterBtn');
+            btn.classList.toggle('active', onlyDebts);
+            filterStudents(document.querySelector('.search-input').value);
+        }
+
+        function changeRole(role) {
+            alert("Tanlangan rol: " + role);
+        }
+    </script>
+</body>
+</html>

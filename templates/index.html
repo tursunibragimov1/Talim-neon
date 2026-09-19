@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ta'lim.Neon — Smart LMS Platform</title>
+    <title>Ta'lim.Neon — Boshqaruv Tizimi</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,6 +12,7 @@
             --bg-elevated: #1f2937;
             --primary: #00f2fe;
             --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
             --accent-red: #ef4444;
             --text-main: #f9fafb;
             --text-muted: #9ca3af;
@@ -19,13 +20,13 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; padding-bottom: 30px; }
+        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
 
         header {
-            background: rgba(17, 24, 39, 0.9);
+            background: rgba(17, 24, 39, 0.95);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
-            padding: 14px 20px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -33,25 +34,63 @@
             top: 0;
             z-index: 100;
         }
-        .logo { font-weight: 700; font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .role-switch select {
+        .logo { font-weight: 700; font-size: 18px; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+        .user-panel { display: flex; align-items: center; gap: 8px; }
+        .role-pill {
             background: var(--bg-elevated);
-            color: var(--text-main);
+            color: var(--primary);
             border: 1px solid var(--border);
+            padding: 5px 10px;
             border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 13px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 12px;
             cursor: pointer;
         }
 
         .container { max-width: 800px; margin: 0 auto; padding: 16px; }
 
-        /* Asosiy 4 ta ko'rsatkich */
+        /* Kirish oynasi */
+        .auth-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 420px;
+            margin: 40px auto 0;
+        }
+        .auth-card h2 { font-size: 20px; margin-bottom: 8px; }
+        .auth-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+        .form-control {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: var(--text-main);
+            font-size: 14px;
+        }
+        .quick-roles { display: flex; gap: 8px; margin-top: 14px; }
+        .quick-roles button {
+            flex: 1; padding: 8px; background: var(--bg-elevated); border: 1px solid var(--border);
+            color: var(--text-muted); border-radius: 6px; font-size: 11px; cursor: pointer;
+        }
+
+        /* Metrikalar */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
         @media (min-width: 600px) {
             .metrics-grid { grid-template-columns: repeat(4, 1fr); }
@@ -60,69 +99,65 @@
             background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 14px;
+            padding: 12px;
         }
-        .metric-card span { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
-        .metric-card h3 { font-size: 20px; margin-top: 6px; }
+        .metric-card span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .metric-card h3 { font-size: 18px; margin-top: 4px; }
 
-        /* Qidiruv va filtrlar */
-        .controls-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
+        /* Harakatlar paneli */
+        .action-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .search-input {
             flex: 1;
+            min-width: 180px;
             background: var(--bg-surface);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px 14px;
+            border-radius: 8px;
+            padding: 10px 12px;
             color: var(--text-main);
-            font-size: 14px;
+            font-size: 13px;
         }
-        .filter-btn {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            border-radius: 10px;
+        .btn-add {
+            background: var(--primary);
+            color: #0a0e17;
+            border: none;
+            border-radius: 8px;
             padding: 0 14px;
             font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
+            height: 40px;
         }
-        .filter-btn.active { border-color: var(--primary); color: var(--primary); }
 
-        /* Ixcham o'quvchilar ro'yxati */
-        .student-item {
+        /* Ro'yxat elementlari */
+        .item-card {
             background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .student-item:hover { border-color: var(--primary); transform: translateY(-1px); }
-        .student-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-        .student-info p { font-size: 13px; color: var(--text-muted); }
-        
-        .status-badge {
-            padding: 4px 10px;
+        .item-card h4 { font-size: 14px; margin-bottom: 2px; }
+        .item-card p { font-size: 12px; color: var(--text-muted); }
+        .badge {
+            padding: 4px 8px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
-        .status-paid { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-        .status-due { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .badge-blue { background: rgba(0, 242, 254, 0.15); color: var(--primary); }
 
-        /* Ichki tafsilotlar modali (Progressive Disclosure) */
+        /* Modal oyna */
         .modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.85);
             align-items: center;
             justify-content: center;
             padding: 16px;
@@ -133,162 +168,266 @@
             background: var(--bg-surface);
             border: 1px solid var(--border);
             border-radius: 16px;
-            max-width: 480px;
+            max-width: 440px;
             width: 100%;
-            padding: 24px;
+            padding: 20px;
         }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .btn {
-            padding: 12px;
-            border-radius: 10px;
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
+
+        .btn-full {
+            width: 100%;
+            background: var(--primary);
+            color: #0a0e17;
+            padding: 10px;
+            border-radius: 8px;
             border: none;
-            font-weight: 600;
-            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
-            text-align: center;
+            margin-top: 10px;
         }
-        .btn-primary { background: var(--primary); color: #0a0e17; }
-        .btn-secondary { background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-danger {
+            width: 100%;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+            padding: 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">⚡ Ta'lim.Neon</div>
-        <div class="role-switch">
-            <select id="roleSelector" onchange="changeRole(this.value)">
-                <option value="admin">Administrator</option>
-                <option value="teacher">O'qituvchi</option>
-                <option value="student">O'quvchi</option>
-            </select>
+        <div class="user-panel" id="userBar" style="display: none;">
+            <span class="role-pill" id="currentRoleText">Admin</span>
+            <button class="logout-btn" onclick="logout()">Chiqish</button>
         </div>
     </header>
 
-    <div class="container">
-        <!-- 4 ta asosiy statistika -->
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <span>O'quvchilar</span>
-                <h3>142 ta</h3>
+    <div class="container" id="appView">
+        <!-- Kirish oynasi (Login) -->
+        <div class="auth-card" id="loginScreen">
+            <h2>Tizimga kirish</h2>
+            <p>Ta'lim.Neon boshqaruv platformasiga xush kelibsiz</p>
+            <div class="form-group">
+                <label>Login / Telefon</label>
+                <input type="text" id="loginInput" class="form-control" placeholder="+998 90 123 45 67">
             </div>
-            <div class="metric-card">
-                <span>Faol guruhlar</span>
-                <h3>12 ta</h3>
+            <div class="form-group">
+                <label>Parol</label>
+                <input type="password" id="passInput" class="form-control" value="123456">
             </div>
-            <div class="metric-card">
-                <span>Yig'ildi</span>
-                <h3 style="color: var(--accent-green);">18.5M</h3>
-            </div>
-            <div class="metric-card">
-                <span>Qarzdorlik</span>
-                <h3 style="color: var(--accent-red);">8 kishi</h3>
-            </div>
-        </div>
-
-        <!-- Qidiruv maydoni -->
-        <div class="controls-row">
-            <input type="text" class="search-input" placeholder="Ism yoki telefon orqali tezkor qidiruv..." oninput="filterStudents(this.value)">
-            <button class="filter-btn" id="debtFilterBtn" onclick="toggleDebtFilter()">Faqat qarzdorlar</button>
-        </div>
-
-        <!-- O'quvchilarning ixcham ro'yxati -->
-        <div id="studentsList">
-            <div class="student-item" data-status="paid" onclick="openDetails('Yusupov Furqat', 'BioKimyo • Biologiya', '630 000', 'To\'langan', '+998 90 123-45-67')">
-                <div class="student-info">
-                    <h4>Yusupov Furqat</h4>
-                    <p>BioKimyo • +998 90 123-45-67</p>
-                </div>
-                <span class="status-badge status-paid">To'langan</span>
-            </div>
-
-            <div class="student-item" data-status="due" onclick="openDetails('Madiyeva Nodira', 'BioKimyo • Biologiya', '630 000', 'Muddati o\'tgan', '+998 90 987-65-43')">
-                <div class="student-info">
-                    <h4>Madiyeva Nodira</h4>
-                    <p>BioKimyo • +998 90 987-65-43</p>
-                </div>
-                <span class="status-badge status-due">630 000 so'm qarz</span>
-            </div>
-
-            <div class="student-item" data-status="due" onclick="openDetails('Mengiyeva Gulnoz', 'BioKimyo • Biologiya', '700 000', 'Muddati o\'tgan', '+998 93 111-22-33')">
-                <div class="student-info">
-                    <h4>Mengiyeva Gulnoz</h4>
-                    <p>BioKimyo • +998 93 111-22-33</p>
-                </div>
-                <span class="status-badge status-due">700 000 so'm qarz</span>
+            <button class="btn-full" onclick="doLogin('admin')">Kirish (Admin sifatida)</button>
+            <div style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted);">Tezkor sinov rejimi:</div>
+            <div class="quick-roles">
+                <button onclick="doLogin('admin')">Admin</button>
+                <button onclick="doLogin('teacher')">O'qituvchi</button>
+                <button onclick="doLogin('student')">O'quvchi</button>
             </div>
         </div>
+
+        <!-- Asosiy Dashboard (Har bir rol uchun alohida ochiladi) -->
+        <div id="mainDashboard" style="display: none;"></div>
     </div>
 
-    <!-- O'quvchiga tegishli barcha amallar shu oyna ichida -->
-    <div class="modal" id="detailsModal">
+    <!-- Tahrirlash va Qo'shish modali -->
+    <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalName">O'quvchi kartasi</h3>
-                <button class="close-btn" onclick="closeDetails()">&times;</button>
+                <h3 id="modalTitle">Tahrirlash</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
-            <p id="modalGroup" style="color: var(--text-muted); font-size: 14px; margin-bottom: 6px;"></p>
-            <p id="modalPhone" style="color: var(--text-muted); font-size: 14px; margin-bottom: 12px;"></p>
-            <p id="modalPayment" style="font-size: 16px; font-weight: 600; margin-bottom: 8px;"></p>
-
-            <div class="action-grid">
-                <button class="btn btn-primary" onclick="markPaid()">To'lovni qabul qilish</button>
-                <button class="btn btn-secondary" onclick="sendTelegramReport()">Telegram xabar</button>
-            </div>
+            <div id="modalFields"></div>
         </div>
     </div>
 
     <script>
-        let onlyDebts = false;
+        let currentUser = null;
+        let students = [
+            { id: 1, name: "Yusupov Furqat", group: "BioKimyo Intensive", phone: "+998 90 123-45-67", fee: 630000, paid: true, grade: 10 },
+            { id: 2, name: "Madiyeva Nodira", group: "BioKimyo Intensive", phone: "+998 90 987-65-43", fee: 630000, paid: false, grade: 8 },
+            { id: 3, name: "Mengiyeva Gulnoz", group: "BioKimyo Intensive", phone: "+998 93 111-22-33", fee: 700000, paid: false, grade: 0 }
+        ];
 
-        function openDetails(name, group, fee, status, phone) {
-            document.getElementById('modalName').innerText = name;
-            document.getElementById('modalGroup').innerText = "Yo'nalish: " + group;
-            document.getElementById('modalPhone').innerText = "Telefon: " + phone;
-            document.getElementById('modalPayment').innerText = "Holat: " + status + " (" + fee + " so'm)";
-            document.getElementById('detailsModal').classList.add('active');
+        let groups = [
+            { id: 1, name: "BioKimyo Intensive", teacher: "Aziz Karimov", time: "Du/Ch/J 15:00", price: 630000 },
+            { id: 2, name: "IELTS 7.0 Master", teacher: "Olim Ustoz", time: "Se/Pa/Sh 18:00", price: 750000 }
+        ];
+
+        function doLogin(role) {
+            currentUser = role;
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('userBar').style.display = 'flex';
+            document.getElementById('mainDashboard').style.display = 'block';
+
+            const roleNames = { admin: "Administrator", teacher: "O'qituvchi", student: "O'quvchi" };
+            document.getElementById('currentRoleText').innerText = roleNames[role];
+
+            renderView();
         }
 
-        function closeDetails() {
-            document.getElementById('detailsModal').classList.remove('active');
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('userBar').style.display = 'none';
+            document.getElementById('mainDashboard').style.display = 'none';
         }
 
-        function markPaid() {
-            alert("To'lov muvaffaqiyatli qabul qilindi!");
-            closeDetails();
+        function renderView() {
+            const container = document.getElementById('mainDashboard');
+
+            if (currentUser === 'admin') {
+                container.innerHTML = `
+                    <div class="metrics-grid">
+                        <div class="metric-card"><span>O'quvchilar</span><h3>${students.length} ta</h3></div>
+                        <div class="metric-card"><span>Guruhlar</span><h3>${groups.length} ta</h3></div>
+                        <div class="metric-card"><span>Qarzdorlik</span><h3 style="color: var(--accent-red);">${students.filter(s => !s.paid).length} kishi</h3></div>
+                        <div class="metric-card"><span>Oylik Tushum</span><h3 style="color: var(--accent-green);">18.5M</h3></div>
+                    </div>
+
+                    <div class="action-bar">
+                        <input type="text" class="search-input" placeholder="O'quvchini qidirish..." oninput="filterAdmin(this.value)">
+                        <button class="btn-add" onclick="openStudentModal()">+ O'quvchi</button>
+                        <button class="btn-add" style="background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);" onclick="openGroupModal()">Guruhlar</button>
+                    </div>
+
+                    <div id="studentsListArea">
+                        ${students.map(s => `
+                            <div class="item-card" onclick="openStudentModal(${s.id})">
+                                <div>
+                                    <h4>${s.name}</h4>
+                                    <p>${s.group} •${s.phone}</p>
+                                </div>
+                                <span class="badge ${s.paid ? 'badge-green' : 'badge-red'}">${s.paid ? 'To\'langan' : s.fee + ' so\'m qarz'}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (currentUser === 'teacher') {
+                container.innerHTML = `
+                    <div class="metrics-grid">
+                        <div class="metric-card"><span>Guruhlarim</span><h3>${groups.length} ta</h3></div>
+                        <div class="metric-card"><span>Bugun darsda</span><h3 style="color: var(--accent-green);">2 ta</h3></div>
+                        <div class="metric-card"><span>O'rtacha ball</span><h3 style="color: var(--primary);">9.0</h3></div>
+                        <div class="metric-card"><span>Davomat</span><h3>100%</h3></div>
+                    </div>
+                    <h3 style="font-size: 15px; margin-bottom: 12px;">Davomat va Baholar (O'quvchi ustiga bosing)</h3>
+                    ${students.map(s => `
+                        <div class="item-card" onclick="openTeacherGradeModal(${s.id})">
+                            <div>
+                                <h4>${s.name}</h4>
+                                <p>${s.group}</p>
+                            </div>
+                            <span class="badge badge-blue">${s.grade > 0 ? s.grade + ' / 10 ball' : 'Baholanmagan'}</span>
+                        </div>
+                    `).join('')}
+                `;
+            } else if (currentUser === 'student') {
+                container.innerHTML = `
+                    <div class="metrics-grid">
+                        <div class="metric-card"><span>Mening ballim</span><h3 style="color: var(--primary);">9.2</h3></div>
+                        <div class="metric-card"><span>Davomat</span><h3 style="color: var(--accent-green);">100%</h3></div>
+                        <div class="metric-card"><span>To'lov</span><h3 style="color: var(--accent-green);">To'langan</h3></div>
+                        <div class="metric-card"><span>Reyting</span><h3>#1</h3></div>
+                    </div>
+                    <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                        <span style="color: var(--primary); font-size: 12px; font-weight: 700;">TEST REJIMI: BIOLOGIYA</span>
+                        <h4 style="margin: 8px 0 14px 0; font-size: 15px;">Fotosintez jarayoni asosan o'simlikning qaysi qismida boradi?</h4>
+                        <div class="item-card" style="margin-bottom: 6px;" onclick="alert('To\\'g\\'ri javob! +10 ball')">A) Barglarda (Xloroplast)</div>
+                        <div class="item-card" style="margin-bottom: 6px;" onclick="alert('Noto\\'g\\'ri')">B) Ildizda</div>
+                        <div class="item-card" style="margin-bottom: 6px;" onclick="alert('Noto\\'g\\'ri')">C) Poyaning ichki qismida</div>
+                    </div>
+                `;
+            }
         }
 
-        function sendTelegramReport() {
-            alert("Ota-onaga Telegram orqali bitta tugmada hisobot yuborildi!");
-            closeDetails();
+        // Modal mantiqi
+        function openStudentModal(id = null) {
+            const isEdit = id !== null;
+            const student = isEdit ? students.find(s => s.id === id) : { name: "", group: groups[0].name, phone: "", fee: 630000, paid: false };
+            
+            document.getElementById('modalTitle').innerText = isEdit ? "O'quvchini tahrirlash" : "Yangi o'quvchi qo'shish";
+            document.getElementById('modalFields').innerHTML = `
+                <div class="form-group">
+                    <label>F.I.O</label>
+                    <input type="text" id="mName" class="form-control" value="${student.name}">
+                </div>
+                <div class="form-group">
+                    <label>Telefon raqam</label>
+                    <input type="text" id="mPhone" class="form-control" value="${student.phone}">
+                </div>
+                <div class="form-group">
+                    <label>Guruh</label>
+                    <select id="mGroup" class="form-control">
+                        ${groups.map(g => `<option value="${g.name}" ${g.name === student.group ? 'selected' : ''}>${g.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>To'lov holati</label>
+                    <select id="mPaid" class="form-control">
+                        <option value="true" ${student.paid ? 'selected' : ''}>To'langan</option>
+                        <option value="false" ${!student.paid ? 'selected' : ''}>Qarzdor</option>
+                    </select>
+                </div>
+                <button class="btn-full" onclick="saveStudent(${id})">Saqlash</button>
+                ${isEdit ? `<button class="btn-danger" onclick="deleteStudent(${id})">O'chirish</button>` : ''}
+            `;
+            document.getElementById('editModal').classList.add('active');
         }
 
-        function filterStudents(query) {
-            const items = document.querySelectorAll('.student-item');
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                const matchesSearch = text.includes(query.toLowerCase());
-                const isDue = item.getAttribute('data-status') === 'due';
-                
-                if (matchesSearch && (!onlyDebts || isDue)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
+        function saveStudent(id) {
+            const name = document.getElementById('mName').value;
+            const phone = document.getElementById('mPhone').value;
+            const group = document.getElementById('mGroup').value;
+            const paid = document.getElementById('mPaid').value === 'true';
+
+            if (!name) return alert("Ismni kiriting!");
+
+            if (id) {
+                const s = students.find(item => item.id === id);
+                s.name = name; s.phone = phone; s.group = group; s.paid = paid;
+            } else {
+                students.push({ id: Date.now(), name, phone, group, paid, fee: 630000, grade: 0 });
+            }
+            closeModal();
+            renderView();
         }
 
-        function toggleDebtFilter() {
-            onlyDebts = !onlyDebts;
-            const btn = document.getElementById('debtFilterBtn');
-            btn.classList.toggle('active', onlyDebts);
-            filterStudents(document.querySelector('.search-input').value);
+        function deleteStudent(id) {
+            students = students.filter(s => s.id !== id);
+            closeModal();
+            renderView();
         }
 
-        function changeRole(role) {
-            alert("Tanlangan rol: " + role);
+        function openGroupModal() {
+            document.getElementById('modalTitle').innerText = "Guruhlar ro'yxati";
+            document.getElementById('modalFields').innerHTML = `
+                ${groups.map(g => `
+                    <div class="item-card" style="margin-bottom: 8px;">
+                        <div>
+                            <h4>${g.name}</h4>
+                            <p>${g.teacher} •${g.time}</p>
+                        </div>
+                        <span style="font-size: 12px; font-weight: 600;">${g.price} so'm</span>
+                    </div>
+                `).join('')}
+                <button class="btn-full" onclick="alert('Yangi guruh ochish oynasi tez kunda')">+ Yangi guruh ochish</button>
+            `;
+            document.getElementById('editModal').classList.add('active');
         }
-    </script>
-</body>
-                    </html>
+
+        function openTeacherGradeModal(id) {
+            const s = students.find(item => item.id === id);
+            document.getElementById('modalTitle').innerText = s.name;
+            document.getElementById('modalFields').innerHTML = `
+                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">Guruh: ${s.group}</p>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
+                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 10)">10</button>
+                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 9)">9</button>
+                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 8)">8</button>
+                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 7)"

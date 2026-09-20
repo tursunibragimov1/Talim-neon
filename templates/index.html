@@ -20,7 +20,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
+        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; padding-bottom: 30px; }
 
         header {
             background: rgba(17, 24, 39, 0.95);
@@ -57,7 +57,6 @@
 
         .container { max-width: 800px; margin: 0 auto; padding: 16px; }
 
-        /* Kirish oynasi */
         .auth-card {
             background: var(--bg-surface);
             border: 1px solid var(--border);
@@ -81,11 +80,10 @@
         }
         .quick-roles { display: flex; gap: 8px; margin-top: 14px; }
         .quick-roles button {
-            flex: 1; padding: 8px; background: var(--bg-elevated); border: 1px solid var(--border);
-            color: var(--text-muted); border-radius: 6px; font-size: 11px; cursor: pointer;
+            flex: 1; padding: 10px; background: var(--bg-elevated); border: 1px solid var(--border);
+            color: var(--text-main); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
         }
 
-        /* Metrikalar */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -104,7 +102,6 @@
         .metric-card span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
         .metric-card h3 { font-size: 18px; margin-top: 4px; }
 
-        /* Harakatlar paneli */
         .action-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .search-input {
             flex: 1;
@@ -128,7 +125,6 @@
             height: 40px;
         }
 
-        /* Ro'yxat elementlari */
         .item-card {
             background: var(--bg-surface);
             border: 1px solid var(--border);
@@ -152,7 +148,6 @@
         .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
         .badge-blue { background: rgba(0, 242, 254, 0.15); color: var(--primary); }
 
-        /* Modal oyna */
         .modal {
             display: none;
             position: fixed;
@@ -173,25 +168,26 @@
             padding: 20px;
         }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
+        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
 
         .btn-full {
             width: 100%;
             background: var(--primary);
             color: #0a0e17;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             border: none;
             font-weight: 700;
             cursor: pointer;
             margin-top: 10px;
+            font-size: 14px;
         }
         .btn-danger {
             width: 100%;
             background: rgba(239, 68, 68, 0.15);
             color: var(--accent-red);
             border: 1px solid var(--accent-red);
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
@@ -209,38 +205,38 @@
         </div>
     </header>
 
-    <div class="container" id="appView">
-        <!-- Kirish oynasi (Login) -->
+    <div class="container">
+        <!-- Kirish formasi -->
         <div class="auth-card" id="loginScreen">
             <h2>Tizimga kirish</h2>
-            <p>Ta'lim.Neon boshqaruv platformasiga xush kelibsiz</p>
+            <p>Ta'lim.Neon platformasiga xush kelibsiz</p>
             <div class="form-group">
                 <label>Login / Telefon</label>
-                <input type="text" id="loginInput" class="form-control" placeholder="+998 90 123 45 67">
+                <input type="text" id="loginInput" class="form-control" value="+998 90 123 45 67">
             </div>
             <div class="form-group">
                 <label>Parol</label>
                 <input type="password" id="passInput" class="form-control" value="123456">
             </div>
-            <button class="btn-full" onclick="doLogin('admin')">Kirish (Admin sifatida)</button>
+            <button type="button" class="btn-full" onclick="doLogin('admin')">Kirish (Admin sifatida)</button>
             <div style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted);">Tezkor sinov rejimi:</div>
             <div class="quick-roles">
-                <button onclick="doLogin('admin')">Admin</button>
-                <button onclick="doLogin('teacher')">O'qituvchi</button>
-                <button onclick="doLogin('student')">O'quvchi</button>
+                <button type="button" onclick="doLogin('admin')">Admin</button>
+                <button type="button" onclick="doLogin('teacher')">O'qituvchi</button>
+                <button type="button" onclick="doLogin('student')">O'quvchi</button>
             </div>
         </div>
 
-        <!-- Asosiy Dashboard (Har bir rol uchun alohida ochiladi) -->
+        <!-- Asosiy Dashboard -->
         <div id="mainDashboard" style="display: none;"></div>
     </div>
 
-    <!-- Tahrirlash va Qo'shish modali -->
+    <!-- Modal -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalTitle">Tahrirlash</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <button type="button" class="close-btn" onclick="closeModal()">&times;</button>
             </div>
             <div id="modalFields"></div>
         </div>
@@ -265,8 +261,10 @@
             document.getElementById('userBar').style.display = 'flex';
             document.getElementById('mainDashboard').style.display = 'block';
 
-            const roleNames = { admin: "Administrator", teacher: "O'qituvchi", student: "O'quvchi" };
-            document.getElementById('currentRoleText').innerText = roleNames[role];
+            let roleName = "Administrator";
+            if (role === 'teacher') roleName = "O'qituvchi";
+            if (role === 'student') roleName = "O'quvchi";
+            document.getElementById('currentRoleText').innerText = roleName;
 
             renderView();
         }
@@ -282,51 +280,64 @@
             const container = document.getElementById('mainDashboard');
 
             if (currentUser === 'admin') {
-                container.innerHTML = `
+                const debtCount = students.filter(s => !s.paid).length;
+                let html = `
                     <div class="metrics-grid">
                         <div class="metric-card"><span>O'quvchilar</span><h3>${students.length} ta</h3></div>
                         <div class="metric-card"><span>Guruhlar</span><h3>${groups.length} ta</h3></div>
-                        <div class="metric-card"><span>Qarzdorlik</span><h3 style="color: var(--accent-red);">${students.filter(s => !s.paid).length} kishi</h3></div>
+                        <div class="metric-card"><span>Qarzdorlik</span><h3 style="color: var(--accent-red);">${debtCount} kishi</h3></div>
                         <div class="metric-card"><span>Oylik Tushum</span><h3 style="color: var(--accent-green);">18.5M</h3></div>
                     </div>
 
                     <div class="action-bar">
                         <input type="text" class="search-input" placeholder="O'quvchini qidirish..." oninput="filterAdmin(this.value)">
-                        <button class="btn-add" onclick="openStudentModal()">+ O'quvchi</button>
-                        <button class="btn-add" style="background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);" onclick="openGroupModal()">Guruhlar</button>
+                        <button type="button" class="btn-add" onclick="openStudentModal()">+ O'quvchi</button>
+                        <button type="button" class="btn-add" style="background: var(--bg-elevated); color: var(--text-main); border: 1px solid var(--border);" onclick="openGroupModal()">Guruhlar</button>
                     </div>
 
-                    <div id="studentsListArea">
-                        ${students.map(s => `
-                            <div class="item-card" onclick="openStudentModal(${s.id})">
-                                <div>
-                                    <h4>${s.name}</h4>
-                                    <p>${s.group} •${s.phone}</p>
-                                </div>
-                                <span class="badge ${s.paid ? 'badge-green' : 'badge-red'}">${s.paid ? 'To\'langan' : s.fee + ' so\'m qarz'}</span>
+                    <div id="studentsListArea">`;
+
+                students.forEach(s => {
+                    html += `
+                        <div class="item-card" onclick="openStudentModal(${s.id})">
+                            <div>
+                                <h4>${s.name}</h4>
+                                <p>${s.group} • ${s.phone}</p>
                             </div>
-                        `).join('')}
-                    </div>
-                `;
+                            <span class="badge ${s.paid ? 'badge-green' : 'badge-red'}">${s.paid ? "To'langan" : s.fee + " so'm qarz"}</span>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+                container.innerHTML = html;
+
             } else if (currentUser === 'teacher') {
-                container.innerHTML = `
+                let html = `
                     <div class="metrics-grid">
                         <div class="metric-card"><span>Guruhlarim</span><h3>${groups.length} ta</h3></div>
                         <div class="metric-card"><span>Bugun darsda</span><h3 style="color: var(--accent-green);">2 ta</h3></div>
                         <div class="metric-card"><span>O'rtacha ball</span><h3 style="color: var(--primary);">9.0</h3></div>
                         <div class="metric-card"><span>Davomat</span><h3>100%</h3></div>
                     </div>
-                    <h3 style="font-size: 15px; margin-bottom: 12px;">Davomat va Baholar (O'quvchi ustiga bosing)</h3>
-                    ${students.map(s => `
+                    <h3 style="font-size: 15px; margin-bottom: 12px;">Davomat va Baholar (Tanlang)</h3>
+                    <div id="teacherListArea">`;
+
+                students.forEach(s => {
+                    html += `
                         <div class="item-card" onclick="openTeacherGradeModal(${s.id})">
                             <div>
                                 <h4>${s.name}</h4>
                                 <p>${s.group}</p>
                             </div>
-                            <span class="badge badge-blue">${s.grade > 0 ? s.grade + ' / 10 ball' : 'Baholanmagan'}</span>
+                            <span class="badge badge-blue">${s.grade > 0 ? s.grade + " / 10 ball" : "Baholanmagan"}</span>
                         </div>
-                    `).join('')}
-                `;
+                    `;
+                });
+
+                html += `</div>`;
+                container.innerHTML = html;
+
             } else if (currentUser === 'student') {
                 container.innerHTML = `
                     <div class="metrics-grid">
@@ -337,21 +348,31 @@
                     </div>
                     <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
                         <span style="color: var(--primary); font-size: 12px; font-weight: 700;">TEST REJIMI: BIOLOGIYA</span>
-                        <h4 style="margin: 8px 0 14px 0; font-size: 15px;">Fotosintez jarayoni asosan o'simlikning qaysi qismida boradi?</h4>
-                        <div class="item-card" style="margin-bottom: 6px;" onclick="alert('To\\'g\\'ri javob! +10 ball')">A) Barglarda (Xloroplast)</div>
-                        <div class="item-card" style="margin-bottom: 6px;" onclick="alert('Noto\\'g\\'ri')">B) Ildizda</div>
-                        <div class="item-card" style="margin-bottom: 6px;" onclick="alert('Noto\\'g\\'ri')">C) Poyaning ichki qismida</div>
+                        <h4 style="margin: 8px 0 14px 0; font-size: 15px;">Fotosintez jarayoni o'simlikning qaysi organoidida boradi?</h4>
+                        <div class="item-card" style="margin-bottom: 6px;" onclick="checkAnswer(true)">A) Barglarda (Xloroplast)</div>
+                        <div class="item-card" style="margin-bottom: 6px;" onclick="checkAnswer(false)">B) Ildizda</div>
+                        <div class="item-card" style="margin-bottom: 6px;" onclick="checkAnswer(false)">C) Poyaning ichki qismida</div>
                     </div>
                 `;
             }
         }
 
-        // Modal mantiqi
+        function checkAnswer(isCorrect) {
+            if (isCorrect) {
+                alert("To'g'ri javob! +10 ball qo'shildi");
+            } else {
+                alert("Noto'g'ri javob, yana urinib ko'ring");
+            }
+        }
+
         function openStudentModal(id = null) {
             const isEdit = id !== null;
             const student = isEdit ? students.find(s => s.id === id) : { name: "", group: groups[0].name, phone: "", fee: 630000, paid: false };
             
             document.getElementById('modalTitle').innerText = isEdit ? "O'quvchini tahrirlash" : "Yangi o'quvchi qo'shish";
+            
+            let groupOptions = groups.map(g => `<option value="${g.name}" ${g.name === student.group ? 'selected' : ''}>${g.name}</option>`).join('');
+
             document.getElementById('modalFields').innerHTML = `
                 <div class="form-group">
                     <label>F.I.O</label>
@@ -363,9 +384,7 @@
                 </div>
                 <div class="form-group">
                     <label>Guruh</label>
-                    <select id="mGroup" class="form-control">
-                        ${groups.map(g => `<option value="${g.name}" ${g.name === student.group ? 'selected' : ''}>${g.name}</option>`).join('')}
-                    </select>
+                    <select id="mGroup" class="form-control">${groupOptions}</select>
                 </div>
                 <div class="form-group">
                     <label>To'lov holati</label>
@@ -374,25 +393,31 @@
                         <option value="false" ${!student.paid ? 'selected' : ''}>Qarzdor</option>
                     </select>
                 </div>
-                <button class="btn-full" onclick="saveStudent(${id})">Saqlash</button>
-                ${isEdit ? `<button class="btn-danger" onclick="deleteStudent(${id})">O'chirish</button>` : ''}
+                <button type="button" class="btn-full" onclick="saveStudent(${id})">Saqlash</button>
+                ${isEdit ? `<button type="button" class="btn-danger" onclick="deleteStudent(${id})">O'chirish</button>` : ''}
             `;
             document.getElementById('editModal').classList.add('active');
         }
 
         function saveStudent(id) {
-            const name = document.getElementById('mName').value;
-            const phone = document.getElementById('mPhone').value;
+            const name = document.getElementById('mName').value.trim();
+            const phone = document.getElementById('mPhone').value.trim();
             const group = document.getElementById('mGroup').value;
             const paid = document.getElementById('mPaid').value === 'true';
 
-            if (!name) return alert("Ismni kiriting!");
+            if (!name) {
+                alert("Iltimos, ismni kiriting!");
+                return;
+            }
 
             if (id) {
                 const s = students.find(item => item.id === id);
-                s.name = name; s.phone = phone; s.group = group; s.paid = paid;
+                s.name = name;
+                s.phone = phone;
+                s.group = group;
+                s.paid = paid;
             } else {
-                students.push({ id: Date.now(), name, phone, group, paid, fee: 630000, grade: 0 });
+                students.push({ id: Date.now(), name: name, phone: phone, group: group, paid: paid, fee: 630000, grade: 0 });
             }
             closeModal();
             renderView();
@@ -406,18 +431,17 @@
 
         function openGroupModal() {
             document.getElementById('modalTitle').innerText = "Guruhlar ro'yxati";
-            document.getElementById('modalFields').innerHTML = `
-                ${groups.map(g => `
-                    <div class="item-card" style="margin-bottom: 8px;">
-                        <div>
-                            <h4>${g.name}</h4>
-                            <p>${g.teacher} •${g.time}</p>
-                        </div>
-                        <span style="font-size: 12px; font-weight: 600;">${g.price} so'm</span>
+            let groupsHtml = groups.map(g => `
+                <div class="item-card" style="margin-bottom: 8px;">
+                    <div>
+                        <h4>${g.name}</h4>
+                        <p>${g.teacher} • ${g.time}</p>
                     </div>
-                `).join('')}
-                <button class="btn-full" onclick="alert('Yangi guruh ochish oynasi tez kunda')">+ Yangi guruh ochish</button>
-            `;
+                    <span style="font-size: 12px; font-weight: 600;">${g.price} so'm</span>
+                </div>
+            `).join('');
+
+            document.getElementById('modalFields').innerHTML = groupsHtml;
             document.getElementById('editModal').classList.add('active');
         }
 
@@ -427,7 +451,5 @@
             document.getElementById('modalFields').innerHTML = `
                 <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">Guruh: ${s.group}</p>
                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
-                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 10)">10</button>
-                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 9)">9</button>
-                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 8)">8</button>
-                    <button class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 7)"
+                    <button type="button" class="btn-full" style="background: var(--bg-elevated); color: #fff; margin: 0;" onclick="saveGrade(${s.id}, 10)">10</button>
+                    <button type="button" class="btn-
